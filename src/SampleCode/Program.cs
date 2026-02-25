@@ -1,199 +1,120 @@
-﻿using NMeCab;
+﻿using System.Diagnostics;
 using NMeCab.Specialized;
-using System;
-using System.Linq;
 
-class Program
+// --- Benchmark: MeCab.NET Performance ---
+
+// Find the IPAdic dictionary
+var dicDir = AppDomain.CurrentDomain.BaseDirectory;
+while (!Directory.Exists(Path.Combine(dicDir, "dic", "ipadic")))
+    dicDir = Directory.GetParent(dicDir)!.FullName;
+dicDir = Path.Combine(dicDir, "dic", "ipadic");
+
+Console.WriteLine($"Dictionary: {dicDir}");
+Console.WriteLine();
+
+// 1. Tagger creation benchmark
+Console.WriteLine("=== Tagger Creation ===");
+var sw = Stopwatch.StartNew();
+for (int i = 0; i < 10; i++)
 {
-    static void Main()
-    {
-        Program.UseNotBeAwareOfDictionaly();
-        Program.UseWithUserPreparedDictionaly1();
-        Program.UseWithUserPreparedDictionaly2();
-        Program.UseNBest();
-        Program.UseSoftWakachi();
-        Program.UseLattice();
-
-        Console.Read();
-    }
-
-    static void UseNotBeAwareOfDictionaly()
-    {
-        Console.WriteLine("----------------------------------------------------------------------");
-        Console.WriteLine("Example of using not be aware of dictionary :");
-        Console.WriteLine();
-
-        using (var tagger = MeCabIpaDicTagger.Create()) // Taggerインスタンスを生成
-        {
-            var nodes = tagger.Parse("皇帝の新しい心"); // 形態素解析を実行
-            foreach (var node in nodes) // 形態素ノード配列を順に処理
-            {
-                Console.WriteLine($"表層形：{node.Surface}");
-                Console.WriteLine($"読み　：{node.Reading}");
-                Console.WriteLine($"品詞　：{node.PartsOfSpeech}");
-                Console.WriteLine();
-            }
-        }
-    }
-
-    static void UseWithUserPreparedDictionaly1()
-    {
-        Console.WriteLine("----------------------------------------------------------------------");
-        Console.WriteLine("Example of using user prepared dictionaly 1 (for general dic) :");
-        Console.WriteLine();
-
-        var dicDir = "../../../../../dic/ipadic"; // 辞書のパス
-
-        using (var tagger = MeCabTagger.Create(dicDir)) // 汎用のTaggerインスタンスを生成
-        {
-            var nodes = tagger.Parse("皇帝の新しい心"); // 形態素解析を実行
-            foreach (var node in nodes) // 形態素ノード配列を順に処理
-            {
-                Console.WriteLine($"表層形：{node.Surface}");
-                Console.WriteLine($"素性　：{node.Feature}"); // 全ての素性文字列
-                Console.WriteLine();
-            }
-        }
-    }
-
-    static void UseWithUserPreparedDictionaly2()
-    {
-        Console.WriteLine("----------------------------------------------------------------------");
-        Console.WriteLine("Example of using user prepared dictionaly 2 (for IPAdic) :");
-        Console.WriteLine();
-
-        var dicDir = "../../../../../dic/ipadic"; // 辞書のパス
-
-        using (var tagger = MeCabIpaDicTagger.Create(dicDir)) // IPAdic形式用のTaggerインスタンスを生成
-        {
-            var nodes = tagger.Parse("皇帝の新しい心"); // 形態素解析を実行
-            foreach (var node in nodes) // 形態素ノード配列を順に処理
-            {
-                Console.WriteLine($"表層形：{node.Surface}");
-                Console.WriteLine($"読み　：{node.Reading}"); // 個別の素性
-                Console.WriteLine($"品詞　：{node.PartsOfSpeech}"); // 〃
-                Console.WriteLine();
-            }
-        }
-    }
-
-    static void UseNBest()
-    {
-        Console.WriteLine("----------------------------------------------------------------------");
-        Console.WriteLine("Example of using N-Best :");
-        Console.WriteLine();
-
-        using (var tagger = MeCabIpaDicTagger.Create())
-        {
-            var results = tagger.ParseNBest("東京大学"); // Nベスト解を取得
-            foreach (var nodes in results.Take(5)) // 上位から5件までの解を処理
-            {
-                foreach (var node in nodes) // 形態素ノード配列を順に処理
-                {
-                    Console.WriteLine($"表層形：{node.Surface}");
-                    Console.WriteLine($"読み　：{node.Reading}");
-                    Console.WriteLine($"品詞　：{node.PartsOfSpeech}");
-                    Console.WriteLine();
-                }
-
-                Console.WriteLine("----------------");
-            }
-        }
-    }
-
-    static void UseSoftWakachi()
-    {
-        Console.WriteLine("----------------------------------------------------------------------");
-        Console.WriteLine("Example of using Soft-Wakachi :");
-        Console.WriteLine();
-
-        using (var tagger = MeCabIpaDicTagger.Create())
-        {
-            var theta = 1f / 800f / 2f; // 温度パラメータ
-            var nodes = tagger.ParseSoftWakachi("本部長", theta); // ソフトわかち解を取得
-
-            foreach (var node in nodes.Where(n => n.Prob > 0.1f)) // 周辺確率＞0.1の形態素ノードだけを処理
-            {
-                Console.WriteLine($"表層形　：{node.Surface}");
-                Console.WriteLine($"読み　　：{node.Reading}");
-                Console.WriteLine($"品詞　　：{node.PartsOfSpeech}");
-                Console.WriteLine($"周辺確率：{node.Prob}");
-                Console.WriteLine();
-            }
-
-            // さらに、周辺確率の上位から表層形の異なるものの5件までを取得
-            var searchWords = nodes.OrderByDescending(n => n.Prob)
-                                   .Select(n => n.Surface)
-                                   .Distinct()
-                                   .Take(5);
-            Console.WriteLine($"上位ワード：{string.Join(",", searchWords)}");
-        }
-    }
-
-    static void UseLattice()
-    {
-        Console.WriteLine("----------------------------------------------------------------------");
-        Console.WriteLine("Example of using Lattice :");
-        Console.WriteLine();
-
-        using (var tagger = MeCabIpaDicTagger.Create())
-        {
-            var prm = new MeCabParam()
-            {
-                LatticeLevel = MeCabLatticeLevel.Two,
-                Theta = 1f / 800f / 2f
-            };
-
-            var lattice = tagger.ParseToLattice("東京大学", prm); // ラティスを取得
-
-            // ラティスから、ベスト解を取得し処理
-            foreach (var node in lattice.GetBestNodes())
-            {
-                Console.Write(node.Surface);
-                Console.CursorLeft = 10;
-                Console.Write(node.Feature);
-                Console.WriteLine();
-            }
-
-            Console.WriteLine("--------");
-
-            // ラティスから、2番目と3番目のベスト解を取得し処理
-            foreach (var result in lattice.GetNBestResults().Skip(1).Take(2))
-            {
-                foreach (var node in result)
-                {
-                    Console.Write(node.Surface);
-                    Console.CursorLeft = 10;
-                    Console.Write(node.Feature);
-                    Console.WriteLine();
-                }
-
-                Console.WriteLine("----");
-            }
-
-            Console.WriteLine("--------");
-
-            // ラティスから、開始位置別の形態素を取得し処理
-            for (int i = 0; i < lattice.BeginNodeList.Length - 1; i++)
-            {
-                for (var node = lattice.BeginNodeList[i]; node != null; node = node.BNext)
-                {
-                    if (node.Prob <= 0.001f) continue;
-
-                    Console.CursorLeft = i * 2;
-                    Console.Write(node.Surface);
-                    Console.CursorLeft = 10;
-                    Console.Write(node.Prob.ToString("F3"));
-                    Console.CursorLeft = 16;
-                    Console.Write(node.Feature);
-                    Console.WriteLine();
-                }
-            }
-
-            Console.WriteLine("--------");
-
-            // ラティスから、最終的な累積コストのみを取得し表示
-            Console.WriteLine(lattice.EosNode.Cost);
-        }
-    }
+    using var t = MeCabIpaDicTagger.Create(dicDir);
 }
+sw.Stop();
+Console.WriteLine($"  10 iterations: {sw.ElapsedMilliseconds}ms (avg {sw.ElapsedMilliseconds / 10.0:F1}ms per create)");
+Console.WriteLine();
+
+// 2. Parse single sentence benchmark
+using var tagger = MeCabIpaDicTagger.Create(dicDir);
+
+var sentences = new[]
+{
+    "日本語の形態素解析を行います",
+    "東京特許許可局局長今日急遽休暇許可却下",
+    "すもももももももものうち",
+    "彼女は新しいレストランで美味しい料理を食べました",
+    "プログラミング言語の中でC#は最も人気のある言語の一つです",
+};
+
+Console.WriteLine("=== Single Sentence Parse (10,000 iterations each) ===");
+foreach (var sentence in sentences)
+{
+    sw.Restart();
+    for (int i = 0; i < 10_000; i++)
+    {
+        var nodes = tagger.Parse(sentence);
+    }
+    sw.Stop();
+    var usPerParse = sw.Elapsed.TotalMicroseconds / 10_000;
+    Console.WriteLine($"  \"{sentence}\"");
+    Console.WriteLine($"    {usPerParse:F1}µs/parse ({10_000_000.0 / sw.Elapsed.TotalMicroseconds:F0} parses/sec)");
+}
+Console.WriteLine();
+
+// 3. Parse vs ParseToNodes comparison
+Console.WriteLine("=== Parse() vs ParseToNodes() (10,000 iterations) ===");
+var testSentence = "日本語の形態素解析を行います";
+
+sw.Restart();
+for (int i = 0; i < 10_000; i++)
+{
+    var nodes = tagger.Parse(testSentence);
+    foreach (var n in nodes) { _ = n.Surface; }
+}
+sw.Stop();
+var parseUs = sw.Elapsed.TotalMicroseconds / 10_000;
+
+sw.Restart();
+for (int i = 0; i < 10_000; i++)
+{
+    foreach (var n in tagger.ParseToNodes(testSentence)) { _ = n.Surface; }
+}
+sw.Stop();
+var parseToNodesUs = sw.Elapsed.TotalMicroseconds / 10_000;
+
+Console.WriteLine($"  Parse():        {parseUs:F1}µs/call");
+Console.WriteLine($"  ParseToNodes(): {parseToNodesUs:F1}µs/call");
+Console.WriteLine();
+
+// 4. Kokoro.txt full-text benchmark (if available)
+var kokoroPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "kokoro.txt");
+if (!File.Exists(kokoroPath))
+{
+    // Try to find it
+    var searchDir = AppDomain.CurrentDomain.BaseDirectory;
+    while (!File.Exists(Path.Combine(searchDir, "kokoro.txt")) && Directory.GetParent(searchDir) != null)
+        searchDir = Directory.GetParent(searchDir)!.FullName;
+    kokoroPath = Path.Combine(searchDir, "kokoro.txt");
+}
+
+if (File.Exists(kokoroPath))
+{
+    var lines = File.ReadAllLines(kokoroPath);
+    Console.WriteLine($"=== Full Text: kokoro.txt ({lines.Length} lines) ===");
+    
+    sw.Restart();
+    int totalNodes = 0;
+    foreach (var line in lines)
+    {
+        if (string.IsNullOrWhiteSpace(line)) continue;
+        var nodes = tagger.Parse(line);
+        totalNodes += nodes.Length;
+    }
+    sw.Stop();
+    Console.WriteLine($"  Time: {sw.ElapsedMilliseconds}ms");
+    Console.WriteLine($"  Lines: {lines.Length}");
+    Console.WriteLine($"  Nodes: {totalNodes}");
+    Console.WriteLine($"  Throughput: {lines.Length * 1000.0 / sw.ElapsedMilliseconds:F0} lines/sec");
+}
+else
+{
+    Console.WriteLine("=== kokoro.txt not found, skipping full-text benchmark ===");
+}
+
+// 5. Memory / allocation info
+Console.WriteLine();
+Console.WriteLine("=== Memory ===");
+GC.Collect();
+GC.WaitForPendingFinalizers();
+GC.Collect();
+Console.WriteLine($"  Working set: {Environment.WorkingSet / 1024 / 1024}MB");
+Console.WriteLine($"  GC total memory: {GC.GetTotalMemory(true) / 1024 / 1024}MB");

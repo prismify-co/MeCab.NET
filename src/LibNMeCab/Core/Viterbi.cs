@@ -6,6 +6,7 @@
 #pragma warning disable CS1591
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -57,12 +58,42 @@ namespace NMeCab.Core
             BuildBestLattice(lattice.BosNode, lattice.EosNode, lattice.BestResultStack);
         }
 
+        private const int StackAllocByteThreshold = 4096;
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private unsafe void DoViterbi(char* str, int len, MeCabLattice<TNode> lattice, bool withAllPath)
         {
             var enc = this.tokenizer.Encoding;
             int bytesLen = enc.GetByteCount(str, len);
-            byte* bytesBegin = stackalloc byte[bytesLen];
+
+            if (bytesLen <= StackAllocByteThreshold)
+            {
+                // Small buffers: stack-allocate (fastest, zero cost)
+                byte* bytesBegin = stackalloc byte[bytesLen];
+                DoViterbiCore(str, len, bytesBegin, bytesLen, enc, lattice, withAllPath);
+            }
+            else
+            {
+                // Large buffers: rent from ArrayPool (no GC, thread-safe)
+                var rented = ArrayPool<byte>.Shared.Rent(bytesLen);
+                try
+                {
+                    fixed (byte* bytesBegin = rented)
+                    {
+                        DoViterbiCore(str, len, bytesBegin, bytesLen, enc, lattice, withAllPath);
+                    }
+                }
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(rented);
+                }
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private unsafe void DoViterbiCore(char* str, int len, byte* bytesBegin, int bytesLen,
+                                          System.Text.Encoding enc, MeCabLattice<TNode> lattice, bool withAllPath)
+        {
             if (len > 0) enc.GetBytes(str, len, bytesBegin, bytesLen);
             byte* bytesEnd = bytesBegin + bytesLen;
             char* begin = str;
