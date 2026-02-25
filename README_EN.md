@@ -2,9 +2,6 @@
 
 A Japanese morphological analysis engine for .NET, modernized for .NET 10+.
 
-> **Fork of [NMeCab](https://github.com/komutan/NMeCab)** by Tsuyoshi Komuta, with contributions from [MeCab.DotNet](https://github.com/kekyo/MeCab.DotNet) by Kouji Matsui.  
-> Maintained by [Prismify](https://github.com/prismify-co).
-
 📖 日本語ドキュメントは [README.md](./README.md) をご覧ください。
 
 ---

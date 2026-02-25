@@ -10,7 +10,7 @@
     <Version>1.0.0</Version>
 
     <!-- Package metadata -->
-    <Authors>Tsuyoshi Komuta;Prismify</Authors>
+    <Authors>Tsuyoshi Komuta;Prismify LLC</Authors>
     <Product>MeCab.NET</Product>
     <Title>MeCab.NET — Japanese Morphological Analyzer</Title>
     <Description>A Japanese morphological analysis library for .NET. Forked from NMeCab, modernized for .NET 10+.</Description>

@@ -6,7 +6,7 @@
     <Version>1.0.0</Version>
 
     <!-- Package metadata -->
-    <Authors>Tsuyoshi Komuta;Prismify</Authors>
+    <Authors>Tsuyoshi Komuta;Prismify LLC</Authors>
     <Product>IPAdic binary for MeCab.NET</Product>
     <Title>IPAdic binary for MeCab.NET</Title>
     <Description>Binary compiled dictionary data IPAdic for MeCab.NET Japanese morphological analysis library.</Description>

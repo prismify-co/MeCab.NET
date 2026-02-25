@@ -614,6 +614,8 @@ Taku Kudo (@taku910) 氏のMeCabという素晴らしいソフトウェアの公
 Kouji Matsui (＠kekyo) 氏の素晴らしい情報とコードの公開に感謝いたします。
 LibNMeCab.IpaDicBin の辞書ファイルをNuGet/MSBuildで扱うコードは、 ＠kekyo氏によるGPL/LGPLデュアルライセンスのオープンソースをほぼそのまま使用させて頂いたものです。
 
+Takeshi (@iwatakeshi) 氏による.NET 10への移行、パフォーマンス改善、および英語ドキュメントの作成に感謝いたします。
+
 ## リリースノート
 
 - v0.10 (2020-09-06) 以後
