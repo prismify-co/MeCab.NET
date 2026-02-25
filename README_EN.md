@@ -42,10 +42,8 @@ using NMeCab.Specialized;
 // Create a tagger with the bundled IPAdic dictionary
 using var tagger = MeCabIpaDicTagger.Create();
 
-// Parse a sentence
-var nodes = tagger.Parse("日本語の形態素解析を行います");
-
-foreach (var node in nodes)
+// Parse a sentence — returns IEnumerable<MeCabIpaDicNode>
+foreach (var node in tagger.ParseToNodes("日本語の形態素解析を行います"))
 {
     Console.WriteLine($"{node.Surface}\t{node.PartsOfSpeech}\t{node.Reading}");
 }

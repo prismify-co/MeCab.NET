@@ -105,7 +105,26 @@ namespace NMeCab
             return this.ParseToLattice(sentence, length, param).GetBestNodes();
         }
 
+        /// <summary>
+        /// Parses a sentence and returns the best morpheme sequence as a lazy enumerable.
+        /// Unlike <see cref="Parse(string)"/> which returns an array, this avoids
+        /// the array allocation and yields nodes one at a time.
+        /// </summary>
+        /// <param name="sentence">The sentence to parse.</param>
+        /// <returns>An enumerable of morpheme nodes (excluding BOS/EOS markers).</returns>
+        public IEnumerable<TNode> ParseToNodes(string sentence)
+        {
+            var nodes = this.Parse(sentence);
+            for (int i = 0; i < nodes.Length; i++)
+            {
+                var node = nodes[i];
+                if (node.Stat != MeCabNodeStat.Bos && node.Stat != MeCabNodeStat.Eos)
+                    yield return node;
+            }
+        }
+
         #endregion
+
 
         #region NBest
 
