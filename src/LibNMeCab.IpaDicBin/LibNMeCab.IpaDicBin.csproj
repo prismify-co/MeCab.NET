@@ -4,6 +4,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>NMeCab</RootNamespace>
     <Version>1.0.0</Version>
+    <PackageId>MeCab.NET.IpaDicBin</PackageId>
 
     <!-- Package metadata -->
     <Authors>Tsuyoshi Komuta;Prismify LLC</Authors>
