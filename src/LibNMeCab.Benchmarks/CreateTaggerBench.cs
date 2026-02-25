@@ -6,7 +6,7 @@ namespace LibNMeCab.Benchmarks
 {
     public class CreateTaggerBench
     {
-        [Params("ipadic", "unidic-lite")]
+        [Params("ipadic", "unidic-lite", "unidic-cwj-3.1.0")]
         public string Dic { get; set; }
 
         private string dicDir;

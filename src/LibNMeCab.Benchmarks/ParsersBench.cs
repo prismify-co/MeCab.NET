@@ -8,7 +8,7 @@ namespace LibNMeCab.Benchmarks
 {
     public class ParsersBench
     {
-        [Params("ipadic", "unidic-lite")]
+        [Params("ipadic", "unidic-lite", "unidic-cwj-3.1.0")]
         public string Dic { get; set; }
 
         [Params("kokoro.txt")]
