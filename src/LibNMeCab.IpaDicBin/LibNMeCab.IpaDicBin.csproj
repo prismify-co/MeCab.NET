@@ -1,19 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>NMeCab</RootNamespace>
-    <Authors>Tsuyoshi Komuta</Authors>
-    <Product>IPAdic binary for NMeCab liblary</Product>
-    <Title>IPAdic binary for NMeCab liblary</Title>
-    <Description>This package is binary compiled dictionary data IPAdic for Japanese morphological analysis library NMeCab.</Description>
+    <Version>1.0.0</Version>
+
+    <!-- Package metadata -->
+    <Authors>Tsuyoshi Komuta;Prismify</Authors>
+    <Product>IPAdic binary for MeCab.NET</Product>
+    <Title>IPAdic binary for MeCab.NET</Title>
+    <Description>Binary compiled dictionary data IPAdic for MeCab.NET Japanese morphological analysis library.</Description>
     <Copyright>NMeCab - Tsuyoshi Komuta. MeCab - Taku Kudo, and Nippon Telegraph and Telephone Corporation.</Copyright>
     <PackageLicenseExpression>GPL-2.0-or-later OR LGPL-2.1-or-later</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/komutan/NMeCab</RepositoryUrl>
-    <PackageTags>morphological-analysis, part-of-speech-tagger, japanese-nlp, mecab</PackageTags>
+    <RepositoryUrl>https://github.com/prismify-co/MeCab.NET</RepositoryUrl>
+    <PackageTags>morphological-analysis;part-of-speech-tagger;japanese-nlp;mecab;ipadic</PackageTags>
     <PackageIcon>NMeCab-icon-512.png</PackageIcon>
-    <PackageProjectUrl>https://github.com/komutan/NMeCab</PackageProjectUrl>
-    <Version>0.10.0</Version>
+    <PackageProjectUrl>https://github.com/prismify-co/MeCab.NET</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
@@ -39,7 +41,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="LibNMeCab" Version="[0.10.0,0.11.0)" />
+    <ProjectReference Include="..\LibNMeCab\LibNMeCab.csproj" />
   </ItemGroup>
 
 </Project>

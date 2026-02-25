@@ -1,31 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>NMeCab</RootNamespace>
-    <Authors>Tsuyoshi Komuta</Authors>
-    <Product>NMeCab library</Product>
-    <Title>NMeCab liblary</Title>
-    <Description>This package is Japanese morphological analysis library NMeCab. It was developed on .NET (C#), with reference to MeCab (developed in C++). This does not include a binary dictionary, so you need preparing it sepalatary.</Description>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Version>1.0.0</Version>
+
+    <!-- Package metadata -->
+    <Authors>Tsuyoshi Komuta;Prismify</Authors>
+    <Product>MeCab.NET</Product>
+    <Title>MeCab.NET — Japanese Morphological Analyzer</Title>
+    <Description>A Japanese morphological analysis library for .NET. Forked from NMeCab, modernized for .NET 10+.</Description>
     <Copyright>NMeCab - Tsuyoshi Komuta. MeCab - Taku Kudo, and Nippon Telegraph and Telephone Corporation.</Copyright>
-    <RepositoryUrl>https://github.com/komutan/NMeCab</RepositoryUrl>
+    <RepositoryUrl>https://github.com/prismify-co/MeCab.NET</RepositoryUrl>
     <PackageLicenseExpression>GPL-2.0-or-later OR LGPL-2.1-or-later</PackageLicenseExpression>
-    <PackageTags>morphological-analysis, part-of-speech-tagger, japanese-nlp, mecab</PackageTags>
+    <PackageTags>morphological-analysis;part-of-speech-tagger;japanese-nlp;mecab;japanese</PackageTags>
     <PackageIcon>NMeCab-icon-512.png</PackageIcon>
-    <PackageProjectUrl>https://github.com/komutan/NMeCab</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/prismify-co/MeCab.NET</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DefineConstants>TRACE;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
-    <DocumentationFile>LibNMeCab.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DefineConstants>TRACE;DEBUG;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
-    <DocumentationFile>LibNMeCab.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -35,10 +30,4 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CenterCLR.RelaxVersioner" Version="1.0.10">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
 </Project>

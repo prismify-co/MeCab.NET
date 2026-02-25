@@ -1,4 +1,7 @@
-# NMeCab (this software)
+# MeCab.NET (this fork)
+
+MeCab.NET is a modernized fork of NMeCab, maintained by Prismify
+(https://github.com/prismify-co/MeCab.NET).
 
 NMeCab is copyrighted free software by Tsuyoshi Komuta, and is
 released under any of the GPL (see the file GPL) or the LGPL (see the
